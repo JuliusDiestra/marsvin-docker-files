@@ -1,0 +1,54 @@
+#!/usr/bin/python3
+
+import subprocess
+import argparse
+
+class MarsvinDocker(object):
+    def __init__(self):
+        self.docker_cmd = None
+        self.args = None
+        self.parser = None
+
+    def _get_arguments(self,_argv=None):
+        parser = argparse.ArgumentParser(description='Marsvin docker script')
+        subparser = parser.add_subparser(dest='subparser_value')
+        # build
+        p_build = subparser.add_parser('build',
+                                       help='Build docker image')
+        p_build = subparser.add_argument('--dockerfile',
+                                         required=True,
+                                         dest='docker_file_name',
+                                         help='Dockerfile path')
+        p_build = subparser.add_argument('--dockerimage',
+                                         required=True,
+                                         dest='docker_image_name',
+                                         help='Docker image name')
+        # run
+        p_run = subparser.add_parser('run',
+                                     help='Run docker container')
+        p_run = subparser.add_argument('--dockerimage',
+                                       required=True,
+                                       dest='docker_image_name',
+                                       help='Docker image name')
+        p_run = subparser.add_argument('--dockercontainer',
+                                       required=True,
+                                       dest='docker_container_name',
+                                       help='Docker container name')
+        self.args = parser.parse_args(_argv)
+        return self.args
+
+#    def _build_image(self):
+#
+#    def _run_container(self):
+
+#    def _set_command(self):
+
+    def run(self):
+        args = self._get_arguments()
+
+def main():
+    marvin_docker = MarsvinDocker()
+    marvin_docker.run()
+
+if __name__ == "__main__":
+    main()
