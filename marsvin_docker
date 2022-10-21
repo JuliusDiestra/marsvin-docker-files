@@ -11,40 +11,52 @@ class MarsvinDocker(object):
 
     def _get_arguments(self,_argv=None):
         parser = argparse.ArgumentParser(description='Marsvin docker script')
-        subparser = parser.add_subparser(dest='subparser_value')
+        subparser = parser.add_subparsers(dest='subparser_value')
         # build
         p_build = subparser.add_parser('build',
                                        help='Build docker image')
-        p_build = subparser.add_argument('--dockerfile',
-                                         required=True,
-                                         dest='docker_file_name',
-                                         help='Dockerfile path')
-        p_build = subparser.add_argument('--dockerimage',
-                                         required=True,
-                                         dest='docker_image_name',
-                                         help='Docker image name')
+        p_build.add_argument('--dockerfile',
+                             required=True,
+                             dest='docker_file_name',
+                             help='Dockerfile path')
+        p_build.add_argument('--dockerimage',
+                             required=True,
+                             dest='docker_image_name',
+                             help='Docker image name')
         # run
         p_run = subparser.add_parser('run',
                                      help='Run docker container')
-        p_run = subparser.add_argument('--dockerimage',
-                                       required=True,
-                                       dest='docker_image_name',
-                                       help='Docker image name')
-        p_run = subparser.add_argument('--dockercontainer',
-                                       required=True,
-                                       dest='docker_container_name',
-                                       help='Docker container name')
+        p_run.add_argument('--dockerimage',
+                           required=True,
+                           dest='docker_image_name',
+                           help='Docker image name')
+        p_run.add_argument('--dockercontainer',
+                           required=True,
+                           dest='docker_container_name',
+                           help='Docker container name')
         self.args = parser.parse_args(_argv)
         return self.args
 
-#    def _build_image(self):
-#
-#    def _run_container(self):
-
-#    def _set_command(self):
+    def _build_image(self):
+        subprocess.run(["sudo","docker","build",".",
+                        "-t",self.args.docker_image_name,
+                        "-f",self.args.docker_file_name],
+                        check=True)
+    def _run_container(self):
+        subprocess.run(["sudo","docker","run",
+                        "--name",self.args.docker_container_name,
+                        "-it",
+                        "--mount","src=\"(pwd)\",target=/tmp/workspace,type=bind",
+                        self.args.docker_file_name],
+                        check=True)
 
     def run(self):
-        args = self._get_arguments()
+        self.args = self._get_arguments()
+        print(self.args)
+        if self.args.subparser_value == 'build':
+            self._build_image()
+        if self.args.subparser_value == 'run':
+            self._run_container()
 
 def main():
     marvin_docker = MarsvinDocker()
