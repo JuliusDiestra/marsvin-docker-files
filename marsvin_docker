@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 import subprocess
 import argparse
 
@@ -43,11 +44,14 @@ class MarsvinDocker(object):
                         "-f",self.args.docker_file_name],
                         check=True)
     def _run_container(self):
-        subprocess.run(["sudo","docker","run",
-                        "--name",self.args.docker_container_name,
-                        "-it",
-                        "--mount","src=\"(pwd)\",target=/tmp/workspace,type=bind",
-                        self.args.docker_file_name],
+        current_directory = os.getcwd()
+        mount_var = "src=" + current_directory + ",target=/tmp/workspace,type=bind"
+        subprocess.run(['sudo','docker','run',
+                        '--name',self.args.docker_container_name,
+                        '--rm',
+                        '-it',
+                        '--mount',mount_var,
+                        self.args.docker_image_name],
                         check=True)
 
     def run(self):
