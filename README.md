@@ -13,7 +13,7 @@ The directory in mounted into **/tmp/workspace** is mounted with type=bind, ther
 ### Building docker image
 
 ```
-./marsvin_docker --dockerfile <path-to-dockerfile>/< docker-file-name > --dockerimage < docker-image-name  >
+./marsvin_docker build --dockerfile <path-to-dockerfile>/< docker-file-name > --dockerimage < docker-image-name  >
 ```
 
 This command will run:
@@ -24,7 +24,7 @@ sudo docker build . -t <docker-image-name> -f <path-to-dockerfile>/<docker-file-
 ### Run docker container
 
 ```
-./marsvin_docker --dockerimage < docker-image-name  > --dockercontainer < docker-container-name >
+./marsvin_docker run --dockerimage < docker-image-name  > --dockercontainer < docker-container-name >
 ```
 
 This command will run:
