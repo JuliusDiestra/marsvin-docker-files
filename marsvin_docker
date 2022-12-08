@@ -16,22 +16,22 @@ class MarsvinDocker(object):
         # build
         p_build = subparser.add_parser('build',
                                        help='Build docker image')
-        p_build.add_argument('--dockerfile',
+        p_build.add_argument('--docker-file',
                              required=True,
                              dest='docker_file_name',
                              help='Dockerfile path')
-        p_build.add_argument('--dockerimage',
+        p_build.add_argument('--docker-image',
                              required=True,
                              dest='docker_image_name',
                              help='Docker image name')
         # run
         p_run = subparser.add_parser('run',
                                      help='Run docker container')
-        p_run.add_argument('--dockerimage',
+        p_run.add_argument('--docker-image',
                            required=True,
                            dest='docker_image_name',
                            help='Docker image name')
-        p_run.add_argument('--dockercontainer',
+        p_run.add_argument('--docker-container',
                            required=True,
                            dest='docker_container_name',
                            help='Docker container name')
@@ -39,9 +39,15 @@ class MarsvinDocker(object):
         return self.args
 
     def _build_image(self):
+        user_id_var = subprocess.run(['id','-u'],capture_output=True,text=True)
+        user_id = 'USER_ID=' + user_id_var.stdout.strip()
+        group_id_var = subprocess.run(['id','-g'],capture_output=True,text=True)
+        group_id = 'GROUP_ID=' + group_id_var.stdout.strip()
         subprocess.run(["sudo","docker","build",".",
                         "-t",self.args.docker_image_name,
-                        "-f",self.args.docker_file_name],
+                        "-f",self.args.docker_file_name,
+                        "--build-arg",user_id,
+                        "--build-arg",group_id],
                         check=True)
     def _run_container(self):
         current_directory = os.getcwd()

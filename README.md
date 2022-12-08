@@ -8,23 +8,25 @@ While the script run the docker container, it will mount to current location dir
 
 The directory in mounted into **/tmp/workspace** is mounted with type=bind, therefore the files are updated in the host and docker automatically.
 
+The script will create a non root user in the Dockerfile. Then the files created inside the docker container are not created as root.
+
 ## How to use **marsvin_docker** CLI
 
 ### Building docker image
 
 ```
-./marsvin_docker build --dockerfile <path-to-dockerfile>/< docker-file-name > --dockerimage < docker-image-name  >
+./marsvin_docker build --docker-file <path-to-dockerfile>/< docker-file-name > --docker-image < docker-image-name  >
 ```
 
 This command will run:
 ```
-sudo docker build . -t <docker-image-name> -f <path-to-dockerfile>/<docker-file-name>
+sudo docker build . -t <docker-image-name> -f <path-to-dockerfile>/<docker-file-name> --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g)
 ```
 
 ### Run docker container
 
 ```
-./marsvin_docker run --dockerimage < docker-image-name  > --dockercontainer < docker-container-name >
+./marsvin_docker run --docker-image < docker-image-name  > --docker-container < docker-container-name >
 ```
 
 This command will run:
@@ -56,13 +58,13 @@ git clone git@github.com:MarsvinTech/docker-files.git
 # Go to source code directory
 cd/path/to/cpp-source-code
 # Build image called my-docker-image-name
-/path/to/cloned-repo/docker-files/marsvin_docker --dockerfile cpp-ubuntu.Dockerfile --dockerimage my-docker-image-name
+/path/to/cloned-repo/docker-files/marsvin_docker build --docker-file cpp-ubuntu.Dockerfile --docker-image my-docker-image-name
 ```
 
 3. Run container
 
 ```
 # Run container called my-docker-container-name
-/path/to/cloned-repo/docker-files/marsvin_docker --dockerimage my-docker-image-name --dockercontainer my-docker-container-name
+/path/to/cloned-repo/docker-files/marsvin_docker run --docker-image my-docker-image-name --docker-container my-docker-container-name
 ```
 

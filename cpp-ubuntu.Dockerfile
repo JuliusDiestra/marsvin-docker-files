@@ -1,5 +1,11 @@
 FROM ubuntu:18.04
 
+ARG USER_ID
+ARG GROUP_ID
+
+RUN addgroup --gid $GROUP_ID user
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+
 RUN apt-get update && \
     apt-get install -y cmake \
             git \
@@ -21,3 +27,4 @@ RUN git clone -q https://github.com/google/googletest.git /googletest \
 # Create working directory with applications
 WORKDIR /tmp/workspace
 
+USER user
