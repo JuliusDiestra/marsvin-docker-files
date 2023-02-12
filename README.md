@@ -66,7 +66,7 @@ git clone git@github.com:JuliusDiestra/marsvin-docker-files.git
 
 ```bash
 # Go marsvin-docker-files cloned repository.
-cd/path/to/my-repos/marsvin-docker-files
+cd /path/to/my-repos/marsvin-docker-files
 # Build image called my-docker-image-name
 ./marsvin_docker build --docker-file cpp-ubuntu.Dockerfile --docker-image my-docker-image-name
 ```
@@ -75,8 +75,8 @@ cd/path/to/my-repos/marsvin-docker-files
 
 ```bash
 # Go to C++ project directory.
-cd/path/to/cpp-project
+cd /path/to/cpp-project
 # Run container called my-docker-container-name
-/path/to/cloned-repo/marsvin-docker-files/marsvin_docker run --docker-image my-docker-image-name --docker-container my-docker-container-name
+/path/to/my-repos/marsvin-docker-files/marsvin_docker run --docker-image my-docker-image-name --docker-container my-docker-container-name
 ```
 
