@@ -57,14 +57,14 @@ Two paths:
 
 1. Clone repository
 
-```
+```bash
 cd /path/to/my-repos
 git clone git@github.com:JuliusDiestra/marsvin-docker-files.git
 ```
 
 2. Build docker image
 
-```
+```bash
 # Go marsvin-docker-files cloned repository.
 cd/path/to/my-repos/marsvin-docker-files
 # Build image called my-docker-image-name
@@ -73,7 +73,7 @@ cd/path/to/my-repos/marsvin-docker-files
 
 3. Run container
 
-```
+```bash
 # Go to C++ project directory.
 cd/path/to/cpp-project
 # Run container called my-docker-container-name
