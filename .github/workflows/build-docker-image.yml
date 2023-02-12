@@ -1,0 +1,43 @@
+name: Build docker image
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - releases/*
+
+jobs:
+  check-cpp-ubuntu-Dockerfile:
+    name: Check if cpp-ubuntu Dockerfile changed
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Diff current commit with main
+        shell: sh
+        id: diff_files
+        run: |
+          docker_file_name='cpp-ubuntu.Dockerfile'
+          flag_docker=$(git diff --name-only origin/main HEAD | grep $docker_file_name)
+          echo "something"
+          echo $flag_docker
+          if [["$docker_file_name" == "$flag_docker" ]]; then
+            docker_file_changed=true;
+          else
+            docker_file_changed=false;
+          fi
+          echo '::set-output name=DOCKER_FILE_CHANGED::true'
+    outputs:
+      docker-file-changed: ${{ steps.diff_files.outputs.DOCKER_FILE_CHANGED }}
+  build-cpp-ubuntu-dockerfile:
+    name: Build cpp-ubuntu Dockerfile
+    runs-on: ubuntu-20.04
+    needs:
+      - check-cpp-ubuntu-Dockerfile
+    if: needs.check-cpp-ubuntu-Dockerfile.outputs.docker-file-changed == 'true'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build docker image
+        run: docker build . -t marsvin-cpp-image -f cpp-ubuntu.Dockerfile
+
