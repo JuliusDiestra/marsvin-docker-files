@@ -22,7 +22,7 @@ jobs:
           flag_docker=$(git diff --name-only origin/main HEAD | grep $docker_file_name)
           echo "something"
           echo $flag_docker
-          if [["$docker_file_name" == "$flag_docker" ]]; then
+          if [[ "$docker_file_name" == "$flag_docker" ]]; then
             docker_file_changed=true;
           else
             docker_file_changed=false;
