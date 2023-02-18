@@ -19,7 +19,7 @@ jobs:
         id: diff_files
         run: |
           bash ci/check-dockerfile-changed.sh
-          echo '::set-output name=DOCKER_FILE_CHANGED::true'
+          echo '::set-output name=DOCKER_FILE_CHANGED::false'
     outputs:
       docker-file-changed: ${{ steps.diff_files.outputs.DOCKER_FILE_CHANGED }}
   build-cpp-ubuntu-dockerfile:
