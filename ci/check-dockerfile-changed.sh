@@ -9,4 +9,4 @@ fi
 
 echo "Docker file $docker_file_name is changed : $docker_file_changed"
 
-echo '::set-output name=DOCKER_FILE_CHANGED::$docker_file_changed'
+echo "DOCKER_FILE_CHANGED=$docker_file_changed" >> $GITHUB_OUTPUT
