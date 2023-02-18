@@ -31,5 +31,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build docker image
-        run: docker build . -t marsvin-cpp-image -f cpp-ubuntu.Dockerfile
+        run: ./marsvin_docker build --docker-image marsvin-cpp-image --docker-file cpp-ubuntu.Dockerfile
 
