@@ -37,3 +37,4 @@ RUN apt-get clean && \
 WORKDIR /tmp/workspace
 
 USER user
+
