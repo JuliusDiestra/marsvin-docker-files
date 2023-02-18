@@ -18,15 +18,7 @@ jobs:
         shell: sh
         id: diff_files
         run: |
-          docker_file_name='cpp-ubuntu.Dockerfile'
-          flag_docker=$(git diff --name-only origin/main HEAD | grep $docker_file_name)
-          echo "something"
-          echo $flag_docker
-          if [ "$docker_file_name" == "$flag_docker" ]; then
-            docker_file_changed=true;
-          else
-            docker_file_changed=false;
-          fi
+          bash ci/check-dockerfile-changed.sh
           echo '::set-output name=DOCKER_FILE_CHANGED::true'
     outputs:
       docker-file-changed: ${{ steps.diff_files.outputs.DOCKER_FILE_CHANGED }}
