@@ -35,6 +35,10 @@ class MarsvinDocker(object):
                            required=True,
                            dest='docker_container_name',
                            help='Docker container name')
+        p_run.add_argument('--bazel-cache',
+                           required=False,
+                           dest='bazel_cache',
+                           help='Bazel cache volumen in host.')
         self.args = parser.parse_args(_argv)
         return self.args
 
@@ -43,7 +47,8 @@ class MarsvinDocker(object):
         user_id = 'USER_ID=' + user_id_var.stdout.strip()
         group_id_var = subprocess.run(['id','-g'],capture_output=True,text=True)
         group_id = 'GROUP_ID=' + group_id_var.stdout.strip()
-        subprocess.run(["sudo","docker","build",".",
+        #subprocess.run(["sudo","docker","build",".",
+        subprocess.run(["docker","build",".",
                         "-t",self.args.docker_image_name,
                         "-f",self.args.docker_file_name,
                         "--build-arg",user_id,
@@ -52,13 +57,19 @@ class MarsvinDocker(object):
     def _run_container(self):
         current_directory = os.getcwd()
         mount_var = "src=" + current_directory + ",target=/tmp/workspace,type=bind"
-        subprocess.run(['sudo','docker','run',
-                        '--name',self.args.docker_container_name,
-                        '--rm',
-                        '-it',
-                        '--mount',mount_var,
-                        self.args.docker_image_name],
-                        check=True)
+
+        #base_run_cmd = ['sudo','docker','run']
+        base_run_cmd = ['docker','run']
+        if self.args.bazel_cache is not None:
+            vol_bazel_cache_arg = self.args.bazel_cache + ':/home/user/.cache'
+            vol_bazel_cache = ['-v', vol_bazel_cache_arg]
+            base_run_cmd = base_run_cmd + vol_bazel_cache
+        run_cmd = base_run_cmd + ['--name',self.args.docker_container_name,
+                                  '--rm',
+                                  '-it',
+                                  '--mount',mount_var,
+                                  self.args.docker_image_name]
+        subprocess.run(run_cmd, check=True)
 
     def run(self):
         self.args = self._get_arguments()
