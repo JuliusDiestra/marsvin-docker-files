@@ -37,6 +37,7 @@ class MarsvinDocker(object):
                            help='Docker container name')
         p_run.add_argument('--bazel-cache',
                            required=False,
+                           action="store_true",
                            dest='bazel_cache',
                            help='Bazel cache volumen in host.')
         self.args = parser.parse_args(_argv)
@@ -47,7 +48,6 @@ class MarsvinDocker(object):
         user_id = 'USER_ID=' + user_id_var.stdout.strip()
         group_id_var = subprocess.run(['id','-g'],capture_output=True,text=True)
         group_id = 'GROUP_ID=' + group_id_var.stdout.strip()
-        #subprocess.run(["sudo","docker","build",".",
         subprocess.run(["docker","build",".",
                         "-t",self.args.docker_image_name,
                         "-f",self.args.docker_file_name,
@@ -58,10 +58,15 @@ class MarsvinDocker(object):
         current_directory = os.getcwd()
         mount_var = "src=" + current_directory + ",target=/tmp/workspace,type=bind"
 
-        #base_run_cmd = ['sudo','docker','run']
         base_run_cmd = ['docker','run']
-        if self.args.bazel_cache is not None:
-            vol_bazel_cache_arg = self.args.bazel_cache + ':/home/user/.cache'
+        if self.args.bazel_cache:
+            home_dir = os.path.expanduser('~')
+            bazel_host_cache = home_dir + '/.cache/bazel-' + self.args.docker_image_name
+            if not os.path.exists(bazel_host_cache):
+                os.mkdir(bazel_host_cache)
+            if not os.path.exists(bazel_host_cache + '/bazelisk'):
+                os.mkdir(bazel_host_cache + '/bazelisk')
+            vol_bazel_cache_arg = bazel_host_cache + ':/home/user/.cache'
             vol_bazel_cache = ['-v', vol_bazel_cache_arg]
             base_run_cmd = base_run_cmd + vol_bazel_cache
         run_cmd = base_run_cmd + ['--name',self.args.docker_container_name,
